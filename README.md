@@ -454,6 +454,44 @@ Being straight about limits is more useful than pretending there are none.
 
 ---
 
+## The code
+
+The full Unity project is in this repository.
+
+```
+build-your-ride-ar/
+├── README.md                 ← you are here
+├── docs/
+│   ├── ARCHITECTURE.md       how it is built, in detail
+│   └── images/               screenshots
+└── BuildYourRideAR/          the Unity project
+    ├── Assets/
+    │   ├── Scenes/Main.unity     the only scene
+    │   ├── Scripts/              19 files — runs on the phone
+    │   ├── Editor/               10 files — content pipeline and scene tools
+    │   ├── Shaders/              ARPlaneGlow, ShadowCatcher
+    │   ├── Models/               5 cars + textures
+    │   ├── Prefabs/  Materials/  Textures/
+    ├── Packages/  ProjectSettings/
+    └── build.sh                  one-command APK from the terminal
+```
+
+**To run it:** open `BuildYourRideAR/` in **Unity 2022.3.61f1**, open `Assets/Scenes/Main.unity`,
+run **`BuildYourRide > Upgrade Scene`**, and press Play. No phone needed to try it — the app
+detects there is no AR hardware and substitutes a floor and an orbit camera.
+
+**To build an APK:** `./build.sh` from inside `BuildYourRideAR/`, with Unity closed.
+
+Full setup, controls, menu commands and troubleshooting:
+**[BuildYourRideAR/README.md](BuildYourRideAR/README.md)**
+
+> The release signing key and its password are **not** in this repository, so builds from a
+> fresh clone are debug-signed. Everything else works as-is.
+
+<br>
+
+---
+
 ## About
 
 Built by **Sathvik Koti** — Robotics and Embedded AI, Maynooth University.

@@ -1,8 +1,55 @@
+# ---------------------------------------------------------------
+# Signing keys and passwords -- never commit these
+# ---------------------------------------------------------------
+*.keystore
+*.jks
+keystore_credentials.txt
+
+# ---------------------------------------------------------------
+# Unity generated folders -- rebuilt automatically on first open
+# ---------------------------------------------------------------
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+Diagnostics/
+
+# ---------------------------------------------------------------
+# Build outputs
+# ---------------------------------------------------------------
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.blob
+crashlytics-build.properties
+
+# ---------------------------------------------------------------
+# IDE and generated solution files
+# ---------------------------------------------------------------
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+sysinfo.txt
+
+# ---------------------------------------------------------------
 # OS
+# ---------------------------------------------------------------
 .DS_Store
 Thumbs.db
-
-# Editors
-.vscode/
-.idea/
 *.swp
