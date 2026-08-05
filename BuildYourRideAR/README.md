@@ -215,10 +215,5 @@ explicit visibility verdict that separates *off-screen*, *camera inside the mode
 
 ## Known limitations
 
-- Car position does not survive a restart — colours, size and angle do. Cross-session world
-  anchoring needs cloud anchors.
-- Occlusion requires a Depth-capable phone; without it the car draws over everything.
-- Draw calls are high on the detailed cars (Maserati 209, Porsche 116). LOD meshes and
-  texture atlasing are the next real optimization.
-- Portrait layout only, in practice.
-- iOS is not buildable from a Linux machine.
+Listed in the [main README](../README.md#not-solved-yet). One extra that only matters when
+building: **iOS cannot be built from a Linux machine.**

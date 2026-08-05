@@ -247,20 +247,13 @@ problem without needing to reproduce it.
 
 ---
 
-## 10. Things learned the hard way
+## 10. Two rules the project runs on
 
 **Compiling a script does not put it in the scene.** A scene saved before a feature existed
 runs perfectly happily without it — no error, no warning, just a feature that quietly does
-nothing. The fix is a startup checklist that names anything missing out loud.
-
-**A null-guarded "wire it up" step is not a repair.** `if (x != null) wire(x)` around a
-lookup silently does nothing in exactly the case you wrote it for. If a component must
-exist, something has to actually *create* it.
+nothing. The defence is a startup checklist that names anything missing out loud.
 
 **Prefer repairs that can be run twice.** The scene repair tool checks before it acts, so
-running it again is harmless. The full regeneration wipes saved data — useful for
-bootstrapping, far too blunt for routine work. Keeping these separate stopped a lot of
-accidental data loss.
-
-**Read the log before forming a theory.** More than one bug here was diagnosed from a
-verbal description, "fixed", and made worse. The log had the answer each time.
+running it again is harmless. Full regeneration wipes saved data — useful for bootstrapping,
+far too blunt for routine work. Keeping the two separate prevented a lot of accidental
+data loss.
