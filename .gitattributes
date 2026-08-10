@@ -1,0 +1,18 @@
+# Normalize text files to LF; leave Unity/binary assets alone.
+* text=auto eol=lf
+
+# Unity YAML files use LF by convention; keep them as-is rather than
+# renormalizing, since Unity's own tooling writes them that way.
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+
+# Binary assets
+*.fbx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.dds binary
+*.tga binary

@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: Build Your Ride AR
+message: >-
+  If you use this software or reference this work, please cite it
+  using the metadata from this file.
+type: software
+authors:
+  - given-names: Sathvik
+    family-names: Koti
+abstract: >-
+  An Android augmented-reality car configurator built in Unity with
+  AR Foundation and ARCore. Places a real-world-scale, plane-anchored
+  3D car in the room, with live paint customization, real-world light
+  estimation, contact-shadow grounding, depth occlusion, and a
+  generic FBX-to-playable-car import pipeline. A full rebuild of an
+  earlier university 3D Vision module project, aimed at fixing that
+  version's anchoring drift and flat visual integration.
+keywords:
+  - augmented reality
+  - Unity
+  - AR Foundation
+  - ARCore
+  - mobile AR
+  - 3D configurator
+license: MIT
+repository-code: 'https://github.com/SATHv1kk/build-your-ride-ar'
