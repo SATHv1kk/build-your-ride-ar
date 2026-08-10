@@ -111,21 +111,23 @@ Deeper detail on all of this: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**
 
 <br>
 
-Tap-to-place worked on the phone, but drag, twist and pinch did nothing. Nothing crashed and
-nothing appeared in the log, which is what made it so hard to find.
+Tap-to-place worked fine on the phone, but dragging, twisting, pinching — none of it did
+anything. Nothing crashed, nothing showed up in the log, which is exactly why it took me so
+long to track down.
 
-A script file had been deleted and recreated during development. Unity identifies scripts by
-a GUID in a sidecar file, and recreating the file generated a **new** one. The saved scene
-still pointed at the old GUID, so the gesture component was an empty "Missing Script"
-placeholder — present in the scene, doing nothing.
+Turned out a script file had gotten deleted and recreated at some point during development.
+Unity identifies scripts by a GUID stashed in a sidecar file, and recreating the file gave it a
+brand new one. The saved scene was still pointing at the old GUID, so the gesture component
+sat there as an empty "Missing Script" placeholder — present, but doing absolutely nothing.
 
-Both safety nets had holes. A `GetComponent` fallback could never work, because a
-missing-script component is not the type you are asking for. And the repair tool only ever
-*wired up* the component if it found one — it never **added** it, and its null check
-swallowed the failure without a word.
+What made it sneaky is that both of my safety nets had a hole in exactly this spot. A
+`GetComponent` fallback can never catch this, because a missing-script component isn't the
+type you're asking for. And my scene-repair tool only ever wired the component up if it found
+one already there — it never added a missing one, and its null check just swallowed the
+failure silently.
 
-**Lesson:** a null-guarded "wire it up" step is not a repair. `if (x != null) wire(x)` does
-nothing in exactly the case you wrote it for.
+Lesson I took from this: a null-guarded "wire it up" step isn't a repair.
+`if (x != null) wire(x)` does nothing in exactly the case it was written to catch.
 
 </details>
 
@@ -134,19 +136,19 @@ nothing in exactly the case you wrote it for.
 
 <br>
 
-A change meant to catch the Porsche's wing struts made the entire Porsche invisible — 116
-meshes, none drawn.
+A change I made to catch the Porsche's wing struts ended up making the entire Porsche
+invisible — all 116 meshes, nothing drawn.
 
-The logic assumed a spoiler sits under its own parent node, so it pulled in anything sharing
-that parent. But this model's hierarchy is completely **flat** — engine, seats, dashboard and
-wing are all direct children of one node. So the moment any mesh matched a keyword,
-"everything next to it" resolved to *the entire car*.
+I'd assumed the spoiler sat under its own parent node, so the logic pulled in anything sharing
+that parent. But this particular model's hierarchy is completely flat — engine, seats,
+dashboard, and wing are all direct children of one single node. So the moment anything matched
+my keyword, "everything sitting next to it" resolved to the entire car.
 
-The keyword that triggered it was `rod`, matching the suspension **push-rods** and
-**tie-rods**.
+The keyword that tripped it was `rod`, which also happened to match the suspension's
+push-rods and tie-rods.
 
-**Lesson:** check the real model hierarchy before assuming a structure, and trust the
-diagnostics log over a verbal bug description.
+What I took away from it: check the real model hierarchy before assuming a structure, and
+trust the diagnostics log over my own guess at what went wrong.
 
 </details>
 
@@ -155,17 +157,18 @@ diagnostics log over a verbal bug description.
 
 <br>
 
-Writing to disk on Android takes 10–50 ms, and the app saved on every colour tap — so
-flicking through a palette meant a dozen blocking disk writes and visible stutter.
+Writing to disk on Android takes 10–50 ms, and I had the app saving on every single colour
+tap — so flicking through a palette meant a dozen blocking disk writes back to back, which you
+could actually feel as stutter.
 
-A "wait two seconds, then save once" system had been designed to fix this. It had never once
-run: every caller went straight to the immediate-save method, so the delay window never
-opened.
+I'd already built a "wait two seconds, then save once" system to fix exactly this. Except it
+had never once actually run — every call site went straight to the immediate-save method
+instead, so that delay window never opened.
 
-Frequent actions now use the delayed save; the instant save is kept only for placing a car,
-switching cars and the app closing. The save pump was also moved off a debug component —
-hanging data persistence off something you plan to strip from release builds is a quiet way
-to lose user data.
+Fixed now: frequent actions use the delayed save, and the instant save is reserved for placing
+a car, switching cars, and closing the app. I also moved the save-pump off a debug component,
+since hanging real data persistence off something meant to be stripped from release builds is
+a quiet way to lose someone's saved car.
 
 </details>
 
@@ -189,12 +192,12 @@ Result: **60 fps on a Galaxy S23**, 57 MB APK.
 
 ## Not solved yet
 
-- **The car does not remember its place in the world.** Colours, size and angle survive a
-  restart; the physical spot does not, because every AR session starts a fresh origin. Doing
-  it properly needs cloud anchors.
-- **Occlusion needs a Depth-capable phone.** Without it the car draws over everything.
+- **The car doesn't remember its place in the world.** Colours, size, and angle survive a
+  restart; the physical spot doesn't, because every AR session starts from a fresh origin.
+  Doing that properly needs cloud anchors, which I haven't built yet.
+- **Occlusion needs a Depth-capable phone.** Without one, the car just draws over everything.
 - **Draw calls are high on the detailed cars** — 209 on the Maserati, 116 on the Porsche.
-  LOD meshes and texture atlasing are the next real win.
+  LOD meshes and texture atlasing are next on my list.
 - **Portrait only**, in practice.
 
 ---
@@ -223,13 +226,13 @@ Setup, controls, menu commands and troubleshooting:
 
 Built by **Sathvik Koti** — Robotics and Embedded AI, Maynooth University.
 
-This began as a university 3D Vision project: one car, a plain colour button, and a model
-that drifted away as you walked. That version's own conclusion named the two things wrong
-with it — **the anchoring drifted**, and **the car looked pasted onto the screen rather than
-present in the room**.
+This started as a university 3D Vision project — one car, a plain colour button, and a model
+that drifted away from where I put it as I walked around. Writing up that first version made
+it obvious what was actually wrong: the anchoring drifted, and the car looked pasted onto the
+screen instead of actually being in the room.
 
-This is the full rebuild aimed at exactly those two problems. Plane-attached anchoring for
-the first; real light estimation, contact shadows and depth occlusion for the second.
-Everything else grew from there.
+So this is the full rebuild, aimed squarely at those two problems — plane-attached anchoring
+for the drift, and real light estimation, contact shadows, and depth occlusion for the "pasted
+on" feeling. Everything else in here grew out of chasing those two.
 
 <sub>3D car models are free community assets, used for a non-commercial academic project.</sub>

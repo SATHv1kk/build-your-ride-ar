@@ -45,19 +45,20 @@ you tap the screen
          └─ status overlay starts reporting
 ```
 
-**Why parenting to the anchor matters.** ARCore is constantly revising its estimate of
-where the room actually is. When it corrects itself, the anchor moves. Because the car is
-a child of the anchor, the car moves with it and stays on the same physical spot.
+**Why parenting to the anchor matters.** ARCore keeps revising its estimate of where the room
+actually is. When it corrects itself, the anchor moves — and because the car is a child of the
+anchor, the car moves with it and stays put on the same physical spot.
 
-The original version of this project skipped the anchor and just placed the model in world
-space. That is why it drifted.
+My first version of this project skipped the anchor and just dropped the model into world
+space directly. That's the whole reason it used to drift.
 
 ---
 
-## 3. Measuring drift honestly
+## 3. Telling drift apart from a healthy correction
 
-Drift is easy to misdiagnose, because "the car moved" and "ARCore corrected the world" look
-identical on screen. So the app measures the difference between the two:
+This one tripped me up for a while: "the car moved" and "ARCore just corrected its estimate of
+the world" look identical on screen. So I added a way to actually measure the difference
+between the two:
 
 ```
 anchorMovement = where the anchor is now  −  where it started
@@ -68,10 +69,10 @@ divergence     = | carMovement − anchorMovement |
 
 | Reading | Meaning |
 |---|---|
-| Divergence ≈ 0, both moving | ARCore is re-estimating and the car is correctly following. **Working as intended.** |
-| Divergence growing | The car has come loose from its anchor. **A parenting bug, not a tracking problem.** |
+| Divergence ≈ 0, both moving | ARCore is re-estimating and the car is correctly following it. Working as intended. |
+| Divergence growing | The car has come loose from its anchor — a parenting bug, not a tracking problem. |
 
-This distinction is the whole point. Without it, a healthy correction looks like a failure.
+Without that distinction, a perfectly healthy correction looks exactly like a bug.
 
 ---
 
@@ -200,8 +201,8 @@ quad sits under the car, samples the shadow attenuation, and blends the result o
 camera feed. This is what grounds the car in the room.
 
 Both are project shaders rather than built-ins, and both are registered as always-included.
-A built-in shader that does not make it into the build renders as bright magenta on device —
-which is exactly what happened to an earlier version.
+Skip that step and a shader that doesn't make it into the build renders as bright magenta on
+device — I learned that one the hard way on an earlier version.
 
 ---
 
@@ -241,19 +242,19 @@ It records:
 - every customization change
 - every console message, with stack traces
 
-The visibility verdict exists because "I placed a car and see nothing" has four completely
-different causes that look the same to a user. Reading one log usually identifies the
-problem without needing to reproduce it.
+I added the visibility verdict because "I placed a car and see nothing" has four completely
+different causes that all look the same from the user's side. Reading one log line usually
+tells me which one it was without having to reproduce the bug myself.
 
 ---
 
-## 10. Two rules the project runs on
+## 10. Two things I keep in mind working on this
 
-**Compiling a script does not put it in the scene.** A scene saved before a feature existed
-runs perfectly happily without it — no error, no warning, just a feature that quietly does
-nothing. The defence is a startup checklist that names anything missing out loud.
+**Compiling a script doesn't put it in the scene.** A scene saved before some feature existed
+just runs happily without it — no error, no warning, it silently does nothing. My defence is a
+startup checklist that names anything missing out loud instead of letting it stay quiet.
 
-**Prefer repairs that can be run twice.** The scene repair tool checks before it acts, so
-running it again is harmless. Full regeneration wipes saved data — useful for bootstrapping,
-far too blunt for routine work. Keeping the two separate prevented a lot of accidental
-data loss.
+**I'd rather write a repair that's safe to run twice.** The scene repair tool checks before it
+acts, so running it again is harmless. Full regeneration wipes saved data — fine for
+bootstrapping a fresh project, way too blunt for routine fixes. Keeping those two separate has
+saved me from losing data by accident more than once.
